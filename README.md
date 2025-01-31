@@ -30,6 +30,7 @@ version: '3'
 services:
   # MySQL Database
   db:
+    container_name: wordpress-db
     image: mysql:5.7
     volumes:
       - db_data:/var/lib/mysql
@@ -44,6 +45,7 @@ services:
 
   # WordPress
   wordpress:
+    container_name: wordpress-app
     depends_on:
       - db
     image: wordpress:php8.1-fpm
@@ -60,6 +62,7 @@ services:
 
   # Nginx
   nginx:
+    container_name: wordpress-nginx
     image: nginx:latest
     ports:
       - "8080:80"
@@ -68,6 +71,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - wordpress_data:/var/www/html
       - ./ssl:/etc/nginx/ssl
+    restart: always
     depends_on:
       - wordpress
     networks:
@@ -76,10 +80,13 @@ services:
 networks:
   wordpress_network:
     driver: bridge
+    name: wordpress_network
 
 volumes:
   db_data:
+    name: wordpress_db_data
   wordpress_data:
+    name: wordpress_app_data
 
 ```
 
